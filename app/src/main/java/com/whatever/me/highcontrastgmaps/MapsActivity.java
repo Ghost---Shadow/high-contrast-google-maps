@@ -1,9 +1,13 @@
 package com.whatever.me.highcontrastgmaps;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,7 +58,11 @@ public class MapsActivity extends AppCompatActivity
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
-        // Position the map's camera near Sydney, Australia.
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, R.string.GpsPermissionError,Toast.LENGTH_LONG).show();
+        } else {
+            googleMap.setMyLocationEnabled(true);
+        }
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
     }
 }
