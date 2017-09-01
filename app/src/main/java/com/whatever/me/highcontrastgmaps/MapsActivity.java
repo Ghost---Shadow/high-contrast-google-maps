@@ -10,6 +10,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,14 +39,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * A styled map using JSON styles from a raw resource.
- */
 public class MapsActivity extends AppCompatActivity
         implements OnMapReadyCallback {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
     private static final int overview = 0;
+    private EditText etSource,etDestination;
+    private Button bGo;
 
     public static GoogleMap exposed_map = null;
 
@@ -52,9 +54,25 @@ public class MapsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        SupportMapFragment mapFragment =
+        final SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
+
+        etSource = (EditText)findViewById(R.id.et_place_autocomplete_fragment_source);
+        etDestination = (EditText)findViewById(R.id.et_place_autocomplete_fragment_destination);
+
+        bGo = (Button) findViewById(R.id.b_go);
+
+        bGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String source = etSource.getText()+"";
+                String destination = etDestination.getText()+"";
+                Toast.makeText(getApplicationContext(), R.string.PleaseWait,Toast.LENGTH_LONG).show();
+                new FetchDirectionsTask().execute(source,destination);
+            }
+        });
+
         mapFragment.getMapAsync(this);
     }
 
@@ -143,9 +161,9 @@ public class MapsActivity extends AppCompatActivity
         }
         setupGoogleMapScreenSettings(googleMap);
         exposed_map = googleMap;
-        String source = "\"483 George St, Sydney NSW 2000, Australia\"";
-        String destination =  "182 Church St, Parramatta NSW 2150, Australia";
-        new FetchDirectionsTask().execute(source,destination);
+        //String source = "\"483 George St, Sydney NSW 2000, Australia\"";
+        //String destination =  "182 Church St, Parramatta NSW 2150, Australia";
+        //new FetchDirectionsTask().execute(source,destination);
     }
 
     private class FetchDirectionsTask extends AsyncTask<String, Integer, DirectionsResult> {
@@ -159,6 +177,7 @@ public class MapsActivity extends AppCompatActivity
 
         protected void onPostExecute(DirectionsResult results) {
             if (results != null) {
+                exposed_map.clear();
                 addPolyline(results, exposed_map);
                 positionCamera(results.routes[overview], exposed_map);
                 addMarkersToMap(results, exposed_map);
