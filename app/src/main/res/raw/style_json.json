@@ -214,7 +214,7 @@
     "elementType": "geometry.stroke",
     "stylers": [
       {
-        "visibility": "on"
+        "visibility": "off"
       },
       {
         "color": "#a82d2d"

@@ -3,6 +3,7 @@ package com.whatever.me.highcontrastgmaps;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -80,11 +81,11 @@ public class MapsActivity extends AppCompatActivity
 
 
     private void setupGoogleMapScreenSettings(GoogleMap mMap) {
-        mMap.setBuildingsEnabled(true);
-        mMap.setIndoorEnabled(true);
-        mMap.setTrafficEnabled(true);
+        mMap.setBuildingsEnabled(false);
+        mMap.setIndoorEnabled(false);
+        mMap.setTrafficEnabled(false);
         UiSettings mUiSettings = mMap.getUiSettings();
-        mUiSettings.setZoomControlsEnabled(true);
+        mUiSettings.setZoomControlsEnabled(false);
         mUiSettings.setCompassEnabled(true);
         mUiSettings.setMyLocationButtonEnabled(true);
         mUiSettings.setScrollGesturesEnabled(true);
@@ -104,7 +105,8 @@ public class MapsActivity extends AppCompatActivity
 
     private void addPolyline(DirectionsResult results, GoogleMap mMap) {
         List<LatLng> decodedPath = PolyUtil.decode(results.routes[overview].overviewPolyline.getEncodedPath());
-        mMap.addPolyline(new PolylineOptions().addAll(decodedPath));
+
+        mMap.addPolyline(new PolylineOptions().addAll(decodedPath).color(Color.RED));
     }
 
     private String getEndLocationTitle(DirectionsResult results) {
